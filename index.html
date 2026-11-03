@@ -262,6 +262,7 @@ footer .script{font-size:2.2rem;color:var(--ink)}
 .addmore button{height:44px;border:1px dashed var(--champ-2);background:var(--card);border-radius:2px;font-size:.8rem;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--ink)}
 .addmore .ico{width:16px;height:16px;color:var(--champ-2)}
 .sh-x{position:absolute;top:12px;right:14px;width:38px;height:38px}
+.n-x{position:absolute;top:20px;right:12px;width:36px;height:36px;background:transparent}
 .cancel-btn{margin-top:10px}
 .prev-pol .badge{position:absolute;top:-12px;right:-14px;background:var(--ink);color:var(--pearl);font-size:.75rem;font-weight:500;padding:5px 11px;border-radius:14px}
 .prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:18px 0 6px}
@@ -458,6 +459,7 @@ const CONFIG = {
   <div class="n-in">
     <div class="mini-arch"><svg viewBox="0 0 120 150" aria-hidden="true"><path d="M2 150V58A58 58 0 0 1 118 58V150" fill="none" stroke="#A7ADB2" stroke-width="1.2"/></svg><img id="nPhoto" alt=""></div>
     <form class="n-card" id="nameForm" autocomplete="off">
+      <button class="round n-x" type="button" id="nameCancel" aria-label="Tutup"><svg class="ico"><use href="#i-x"/></svg></button>
       <div class="caps">Assalamualaikum</div>
       <h1>Siapa nama anda?</h1>
       <p id="nSub"></p>
@@ -467,7 +469,6 @@ const CONFIG = {
       <div class="err" id="nameErr"></div>
       <button class="btn" type="submit">Masuk ke Galeri <svg class="ico"><use href="#i-arrow"/></svg></button>
       <button class="txt-btn" type="button" id="anonBtn">Teruskan sebagai Hamba Allah</button>
-      <button class="btn ghost cancel-btn" type="button" id="nameCancel">Batal</button>
     </form>
     <div class="ayat">
       <div class="ar">وَخَلَقْنَاكُمْ أَزْوَاجًا</div>
@@ -596,7 +597,6 @@ const CONFIG = {
     <div class="lbl">Ucapan suara <small>(pilihan)</small></div>
     <div id="nRec"></div>
     <button class="btn" id="nSend" style="margin-top:22px"><svg class="ico"><use href="#i-spark"/></svg>Hantar ke Dinding</button>
-    <button class="btn ghost cancel-btn" type="button" data-close>Batal</button>
   </div>
   <div id="noteProg" hidden style="text-align:center;padding:10px 0 4px">
     <h4 id="npTitle">Sedang menghantar…</h4>
@@ -623,7 +623,6 @@ const CONFIG = {
   <div class="lbl">Ucapan suara <small>(pilihan)</small></div>
   <div id="bRec"></div>
   <button class="btn" id="bSend" style="margin-top:22px"><svg class="ico"><use href="#i-spark"/></svg>Hantar Ucapan</button>
-  <button class="btn ghost cancel-btn" type="button" data-close>Batal</button>
 </div>
 
 <!-- Keepsake -->
@@ -788,6 +787,7 @@ let view="wall";
 function go(v){
   view=v; ["wall","booth","book","info"].forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  $("fab").hidden = v==="booth" || v==="book";
   window.scrollTo({top:0});
   if(v==="wall") renderWall(true); if(v==="booth") renderStrips(); if(v==="book") loadWishes(); if(v==="info") requestAnimationFrame(()=>{ slideTo(0); slUpdate(); });
 }
@@ -995,7 +995,7 @@ function renderWall(reset){
   const next=list.slice(shown,shown+PAGE);
   next.forEach((g,k)=>{
     const rank=shown+k+1, p=g.cover, n=g.items.length, d=document.createElement("div"); d.className="pol"; d.dataset.id=p.id;
-    d.innerHTML=`${sortBy==="top"&&rank<=3?`<span class="rank">${rank}</span>`:""}<div class="car"><div class="track"></div>${n>1?`<span class="num">1/${n}</span><div class="pdots">${g.items.map((_,j)=>`<i${j?"":' class="on"'}></i>`).join("")}</div>
+    d.innerHTML=`<div class="car"><div class="track"></div>${n>1?`<span class="num">1/${n}</span><div class="pdots">${g.items.map((_,j)=>`<i${j?"":' class="on"'}></i>`).join("")}</div>
       <button class="pnav p" aria-label="Gambar sebelum"><svg class="ico"><use href="#i-left"/></svg></button><button class="pnav n" aria-label="Gambar seterusnya"><svg class="ico"><use href="#i-right"/></svg></button>`:""}</div>
       ${p.note?`<div class="note">${esc(p.note)}</div>`:""}
       <div class="row">${p.voice?`<svg class="ico mic" role="img" aria-label="Ada ucapan suara"><use href="#i-mic"/></svg>`:`<span style="width:14px"></span>`}<span class="who">${esc(p.guest||"Hamba Allah")}</span><button class="heart ${liked.has(p.id)?"on":""}" aria-label="Suka"><svg><use href="#i-heart"/></svg><span>${p.like_count||0}</span></button></div>`;
